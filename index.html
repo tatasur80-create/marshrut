@@ -1,0 +1,1386 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Маршрут Памяти | Образовательный ресурс</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;800&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #9B1B30;
+            --secondary: #D4AF37;
+            --dark: #1A1A1A;
+            --light: #F8F9FA;
+            --card-bg: #FFFFFF;
+            --accent-soft: #F2E6E7;
+            --shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            --shadow-hover: 0 15px 40px rgba(155, 27, 48, 0.15);
+            --radius: 16px;
+            --font-main: 'Montserrat', sans-serif;
+            --font-serif: 'Playfair Display', serif;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: var(--font-main);
+            background-color: var(--light);
+            color: var(--dark);
+            line-height: 1.6;
+            scroll-behavior: smooth;
+        }
+
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
+
+        .section-title {
+            font-family: var(--font-serif);
+            font-size: 2.5rem;
+            color: var(--primary);
+            text-align: center;
+            margin-bottom: 1rem;
+            position: relative;
+            display: inline-block;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .section-title::after {
+            content: '';
+            display: block;
+            width: 80px;
+            height: 4px;
+            background: var(--secondary);
+            margin: 10px auto 0;
+            border-radius: 2px;
+        }
+
+        /* --- Header --- */
+        header {
+            background: linear-gradient(135deg, #6B0F1E 0%, #9B1B30 100%);
+            color: white;
+            padding: 60px 20px 80px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            clip-path: polygon(0 0, 100% 0, 100% 92%, 0 100%);
+            margin-bottom: 40px;
+        }
+
+        header::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><path d="M50 0 L100 50 L50 100 L0 50 Z" fill="none" stroke="rgba(255,255,255,0.05)" stroke-width="2"/></svg>');
+            background-size: 80px 80px;
+            opacity: 0.3;
+        }
+
+        header h1 {
+            font-family: var(--font-serif);
+            font-size: 3.5rem;
+            margin-bottom: 10px;
+            position: relative;
+            text-shadow: 0 4px 15px rgba(0,0,0,0.3);
+        }
+
+        header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            max-width: 700px;
+            margin: 0 auto;
+            position: relative;
+            font-weight: 400;
+        }
+/* --- Шапка с картинкой --- */
+.header-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 40px;
+    position: relative;
+    z-index: 2;
+}
+
+.header-text {
+    flex: 1;
+    text-align: left;
+}
+
+.header-text h1 {
+    text-align: left;
+}
+
+.header-text p {
+    margin: 0 0 10px 0;
+    text-align: left;
+}
+
+.header-image {
+    flex-shrink: 0;
+    width: 250px;
+    height: 300px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    animation: floatLogo 5s ease-in-out infinite;
+}
+
+.header-image img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+    filter: drop-shadow(0 4px 12px rgba(0,0,0,0.3));
+}
+
+@keyframes floatLogo {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-8px); }
+}
+
+/* Адаптив: на мобильных картинка уходит под текст */
+@media (max-width: 768px) {
+    .header-container {
+        flex-direction: column-reverse;
+        text-align: center;
+        gap: 20px;
+    }
+    .header-text { text-align: center; }
+    .header-text h1,
+    .header-text p { text-align: center; }
+    .header-image {
+        width: 150px;
+        height: 150px;
+    }
+}
+
+        .badge {
+            display: inline-block;
+            background: rgba(212, 175, 55, 0.2);
+            border: 2px solid var(--secondary);
+            padding: 8px 20px;
+            border-radius: 50px;
+            margin-top: 20px;
+            font-weight: 600;
+            color: var(--secondary);
+            letter-spacing: 1px;
+            position: relative;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+        }
+
+        /* --- Прогресс-бар --- */
+        .progress-wrap {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 14px 20px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+            border-bottom: 2px solid var(--accent-soft);
+        }
+
+        .progress-info {
+            max-width: 1200px;
+            margin: 0 auto 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--dark);
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .progress-info strong { color: var(--primary); font-size: 1rem; }
+
+        .progress-badge {
+            background: var(--accent-soft);
+            color: var(--primary);
+            padding: 4px 14px;
+            border-radius: 50px;
+            font-size: 0.8rem;
+            transition: all 0.4s;
+        }
+
+        .progress-badge.complete {
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            color: white;
+            font-weight: 700;
+        }
+
+        .progress-track {
+            max-width: 1200px;
+            margin: 0 auto;
+            height: 8px;
+            background: var(--accent-soft);
+            border-radius: 50px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            border-radius: 50px;
+            transition: width 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: 0 0 12px rgba(212, 175, 55, 0.5);
+        }
+
+        /* --- Маршрут --- */
+        .route-intro {
+            text-align: center;
+            margin-bottom: 50px;
+            padding: 0 20px;
+        }
+
+        .route-intro p {
+            max-width: 800px;
+            margin: 20px auto;
+            font-size: 1.1rem;
+            color: #444;
+        }
+
+        .download-block {
+            display: flex;
+            gap: 14px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 30px;
+        }
+
+        .download-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 14px 28px;
+            background: var(--primary);
+            color: white;
+            text-decoration: none;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 0.95rem;
+            transition: all 0.3s;
+            box-shadow: 0 6px 18px rgba(155, 27, 48, 0.25);
+        }
+
+        .download-btn.secondary {
+            background: white;
+            color: var(--primary);
+            border: 2px solid var(--primary);
+            box-shadow: none;
+        }
+
+        .download-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(155, 27, 48, 0.35);
+        }
+
+        .route-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 30px;
+            margin-bottom: 60px;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            border: 1px solid rgba(0,0,0,0.03);
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .card:hover { transform: translateY(-10px); box-shadow: var(--shadow-hover); }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0;
+            width: 8px;
+            height: 100%;
+            background: linear-gradient(to bottom, var(--primary), var(--secondary));
+            transition: width 0.3s ease;
+        }
+
+        .card:hover::before { width: 12px; }
+
+        .card-content {
+            padding: 30px 30px 30px 40px;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .card-step {
+            font-size: 3rem;
+            font-weight: 800;
+            color: var(--accent-soft);
+            line-height: 1;
+            margin-bottom: -10px;
+            user-select: none;
+            transition: color 0.3s;
+        }
+
+        .card:hover .card-step { color: #f7d9dc; }
+
+        .card h3 {
+            font-family: var(--font-serif);
+            font-size: 1.5rem;
+            color: var(--primary);
+            margin: 10px 0;
+        }
+
+        .card p {
+            color: #555;
+            font-size: 0.95rem;
+            flex-grow: 1;
+            margin-bottom: 20px;
+        }
+
+        .card-footer {
+            display: flex;
+            align-items: center;
+            color: var(--primary);
+            font-weight: 600;
+            font-size: 0.9rem;
+            margin-top: auto;
+            opacity: 0.8;
+            transition: opacity 0.3s;
+        }
+
+        .card:hover .card-footer { opacity: 1; }
+
+        .card-footer svg {
+            width: 18px;
+            height: 18px;
+            margin-left: 8px;
+            fill: currentColor;
+            transition: transform 0.3s;
+        }
+
+        .card:hover .card-footer svg { transform: translateX(5px); }
+
+        .card.visited {
+            border: 2px solid var(--secondary);
+            box-shadow: 0 8px 30px rgba(212, 175, 55, 0.25);
+        }
+
+        .card.visited .card-step::after {
+            content: ' ✓';
+            color: #2ecc71;
+            font-size: 0.6em;
+            vertical-align: super;
+        }
+
+        /* --- Секция контента --- */
+        .content-section {
+            display: none;
+            background: white;
+            padding: 60px 20px;
+            margin-top: 40px;
+            border-top: 5px solid var(--secondary);
+            animation: slideUp 0.5s ease-out forwards;
+        }
+
+        .content-section.active { display: block; }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .content-inner { max-width: 900px; margin: 0 auto; }
+
+        .content-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 40px;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .content-header h2 {
+            font-family: var(--font-serif);
+            color: var(--primary);
+            font-size: 2.2rem;
+            margin: 0;
+            flex-basis: 100%;
+        }
+
+        .breadcrumbs {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: #888;
+        }
+
+        .crumb-link {
+            color: var(--primary);
+            cursor: pointer;
+            text-decoration: underline;
+            text-decoration-style: dotted;
+        }
+
+        .crumb-link:hover { text-decoration-style: solid; }
+
+        .crumb-current { color: var(--dark); }
+
+        .nav-buttons { display: flex; gap: 12px; flex-wrap: wrap; }
+
+        .back-btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 50px;
+            cursor: pointer;
+            font-family: var(--font-main);
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: background 0.3s;
+            font-size: 0.9rem;
+        }
+
+        .back-btn:hover { background: #7a1525; }
+
+        .next-btn {
+            background: var(--secondary);
+            color: var(--dark);
+            border: none;
+            padding: 12px 24px;
+            border-radius: 50px;
+            cursor: pointer;
+            font-family: var(--font-main);
+            font-weight: 700;
+            font-size: 0.9rem;
+            transition: all 0.3s;
+        }
+
+        .next-btn:hover { background: #c19b2e; transform: translateX(3px); }
+
+        .content-body { font-size: 1.1rem; line-height: 1.8; color: #2c3e50; }
+
+        .content-body blockquote {
+            border-left: 4px solid var(--secondary);
+            padding: 20px 30px;
+            background: var(--light);
+            margin: 30px 0;
+            font-style: italic;
+            border-radius: 0 10px 10px 0;
+            font-family: var(--font-serif);
+        }
+
+        .content-body strong { color: var(--primary); }
+        .content-body ul { margin: 20px 0 20px 20px; }
+        .content-body li { margin-bottom: 10px; }
+
+        .stat-highlight {
+            background: linear-gradient(90deg, var(--primary) 0%, #c0392b 100%);
+            color: white;
+            padding: 25px;
+            border-radius: var(--radius);
+            margin: 30px 0;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: space-around;
+            text-align: center;
+        }
+
+        .stat-item h4 {
+            font-size: 2.5rem;
+            margin-bottom: 5px;
+            font-family: var(--font-serif);
+        }
+
+        .stat-item p { font-size: 0.9rem; opacity: 0.9; }
+
+        /* --- Аудио-блок --- */
+        .audio-block {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            background: var(--accent-soft);
+            padding: 20px 25px;
+            border-radius: var(--radius);
+            margin: 25px 0;
+            flex-wrap: wrap;
+            border-left: 5px solid var(--primary);
+        }
+
+        .audio-icon {
+            width: 50px; height: 50px;
+            background: var(--primary);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            flex-shrink: 0;
+        }
+
+        .audio-info {
+            flex: 1;
+            min-width: 200px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .audio-info strong {
+            font-family: var(--font-serif);
+            color: var(--primary);
+            font-size: 1.1rem;
+        }
+
+        .audio-info span { font-size: 0.85rem; color: #666; }
+
+        .audio-block audio { height: 40px; border-radius: 50px; }
+
+        /* --- Квиз --- */
+        .quiz {
+            margin-top: 40px;
+            padding: 30px;
+            background: linear-gradient(135deg, #FFF9F0 0%, #FDF6F7 100%);
+            border-radius: var(--radius);
+            border: 2px dashed var(--secondary);
+        }
+
+        .quiz-title {
+            font-family: var(--font-serif);
+            color: var(--primary);
+            font-size: 1.3rem;
+            margin-bottom: 14px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .quiz-title::before {
+            content: '?';
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 32px; height: 32px;
+            background: var(--primary);
+            color: white;
+            border-radius: 50%;
+            font-weight: 800;
+            font-size: 1rem;
+        }
+
+        .quiz-question {
+            font-weight: 600;
+            font-size: 1.05rem;
+            margin-bottom: 18px;
+            color: var(--dark);
+        }
+
+        .quiz-options {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 12px;
+        }
+
+        .quiz-opt {
+            padding: 14px 20px;
+            background: white;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            font-family: var(--font-main);
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: var(--dark);
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: left;
+        }
+
+        .quiz-opt:hover:not(:disabled) {
+            border-color: var(--primary);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(155, 27, 48, 0.12);
+        }
+
+        .quiz-opt:disabled { cursor: not-allowed; }
+
+        .quiz-opt.correct {
+            background: #2ecc71;
+            border-color: #27ae60;
+            color: white;
+            animation: pop 0.4s;
+        }
+
+        .quiz-opt.wrong {
+            background: #e74c3c;
+            border-color: #c0392b;
+            color: white;
+            animation: shake 0.4s;
+        }
+
+        @keyframes pop {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-6px); }
+            75% { transform: translateX(6px); }
+        }
+
+        .quiz-feedback {
+            margin-top: 16px;
+            font-weight: 600;
+            font-size: 0.95rem;
+            min-height: 24px;
+        }
+
+        .quiz-feedback.ok { color: #27ae60; }
+        .quiz-feedback.no { color: #c0392b; }
+
+        /* --- Финальный экран --- */
+        .final-screen {
+            display: none;
+            padding: 60px 20px;
+            background: linear-gradient(135deg, #6B0F1E 0%, #9B1B30 100%);
+            border-radius: var(--radius);
+            margin-top: 40px;
+            color: white;
+            animation: slideUp 0.6s ease-out;
+        }
+
+        .final-screen.active { display: block; }
+
+        .final-inner {
+            max-width: 800px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .final-icon {
+            font-size: 5rem;
+            color: var(--secondary);
+            line-height: 1;
+            margin-bottom: 10px;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.1); opacity: 0.85; }
+        }
+
+        .final-screen h2 {
+            font-family: var(--font-serif);
+            font-size: 2.8rem;
+            margin-bottom: 10px;
+        }
+
+        .final-subtitle {
+            font-size: 1.15rem;
+            opacity: 0.9;
+            margin-bottom: 30px;
+        }
+
+        .final-quote {
+            font-family: var(--font-serif);
+            font-size: 1.4rem;
+            font-style: italic;
+            padding: 30px;
+            background: rgba(255,255,255,0.08);
+            border-left: 4px solid var(--secondary);
+            border-radius: 12px;
+            margin: 30px 0;
+            text-align: left;
+        }
+
+        .final-quote span {
+            display: block;
+            margin-top: 10px;
+            font-size: 1rem;
+            font-style: normal;
+            color: var(--secondary);
+        }
+
+        .final-reflection {
+            background: rgba(255,255,255,0.05);
+            padding: 30px;
+            border-radius: 12px;
+            margin: 30px 0;
+            text-align: left;
+        }
+
+        .final-reflection h3 {
+            font-family: var(--font-serif);
+            color: var(--secondary);
+            font-size: 1.4rem;
+            margin-bottom: 12px;
+        }
+
+        #reflectionInput {
+            width: 100%;
+            min-height: 120px;
+            margin-top: 14px;
+            padding: 16px;
+            border-radius: 10px;
+            border: 1px solid rgba(255,255,255,0.2);
+            background: rgba(255,255,255,0.95);
+            font-family: var(--font-main);
+            font-size: 0.95rem;
+            line-height: 1.6;
+            resize: vertical;
+        }
+
+        .final-btn, .final-back {
+            margin-top: 14px;
+            padding: 12px 28px;
+            background: var(--secondary);
+            color: var(--dark);
+            border: none;
+            border-radius: 50px;
+            font-family: var(--font-main);
+            font-weight: 700;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .final-btn:hover, .final-back:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+        }
+
+        .final-back {
+            background: transparent;
+            color: white;
+            border: 2px solid var(--secondary);
+            margin-top: 25px;
+        }
+
+        .final-note {
+            margin-top: 12px;
+            color: #2ecc71;
+            font-weight: 600;
+            min-height: 20px;
+            font-size: 0.9rem;
+        }
+
+        /* --- Footer --- */
+        footer {
+            background: var(--dark);
+            color: rgba(255,255,255,0.7);
+            padding: 40px 20px;
+            text-align: center;
+            margin-top: 60px;
+            font-size: 0.9rem;
+        }
+
+        footer strong { color: var(--secondary); }
+
+        .share-block {
+            margin-top: 30px;
+            padding-top: 25px;
+            border-top: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .share-title {
+            font-weight: 600;
+            color: var(--secondary);
+            margin-bottom: 12px;
+        }
+
+        .share-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: center;
+        }
+
+        .share-btn {
+            padding: 10px 22px;
+            background: rgba(255,255,255,0.08);
+            border: 1px solid rgba(212, 175, 55, 0.5);
+            color: white;
+            border-radius: 50px;
+            font-family: var(--font-main);
+            font-weight: 600;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .share-btn:hover {
+            background: var(--secondary);
+            color: var(--dark);
+            transform: translateY(-2px);
+        }
+
+        .share-note {
+            margin-top: 12px;
+            font-size: 0.85rem;
+            color: #2ecc71;
+            min-height: 20px;
+            font-weight: 600;
+        }
+
+        /* --- Адаптивность --- */
+        @media (max-width: 768px) {
+            header h1 { font-size: 2.2rem; }
+            .section-title { font-size: 1.8rem; }
+            .card-content { padding: 20px 20px 20px 30px; }
+            .content-header { flex-direction: column; align-items: flex-start; }
+            .content-body { font-size: 1rem; }
+            .nav-buttons { width: 100%; }
+            .nav-buttons button { flex: 1; }
+            .progress-info { font-size: 0.8rem; }
+            .progress-badge { font-size: 0.7rem; padding: 3px 10px; }
+            .final-screen h2 { font-size: 2rem; }
+            .final-quote { font-size: 1.1rem; padding: 20px; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ПРОГРЕСС-БАР -->
+    <div class="progress-wrap">
+        <div class="progress-info">
+            <span>Пройдено станций: <strong id="progressText">0 / 5</strong></span>
+            <span class="progress-badge" id="progressBadge">Маршрут только начат</span>
+        </div>
+        <div class="progress-track">
+            <div class="progress-fill" id="progressFill"></div>
+        </div>
+    </div>
+
+    <!-- ХЕДЕР -->
+   <header>
+    <div class="container header-container">
+        <div class="header-text">
+            <h1>Маршрут Памяти</h1>
+            <p>Интерактивный образовательный ресурс для студентов: воспитание гражданственности и патриотизма через призму ключевых вех истории России</p>
+            <div class="badge">2026 — Год единства народов России</div>
+        </div>
+        <div class="header-image">
+            <img src="images/edinstvo.png" alt="Герб России">
+        </div>
+    </div>
+</header>
+
+    <!-- ОСНОВНОЙ КОНТЕНТ -->
+    <main class="container">
+
+        <!-- ВСТУПЛЕНИЕ -->
+        <section class="route-intro">
+            <h2 class="section-title">Путеводитель по станциям</h2>
+            <p>Этот образовательный маршрут разработан для организации внеаудиторной работы со студентами. Кликните на любую станцию, чтобы раскрыть учебный материал, содержащий исторические факты, цитаты и дискуссионные вопросы для группового обсуждения.</p>
+
+            </section>
+
+        <!-- СЕТКА КАРТОЧЕК -->
+        <div class="route-grid">
+            <div class="card" onclick="openSection('section1')">
+                <div class="card-content">
+                    <div class="card-step">01</div>
+                    <h3>Непокорённый Ленинград</h3>
+                    <p>Хроника мужества: 872 дня блокады, «Дорога жизни» и подвиг защитников Невского пятачка.</p>
+                    <div class="card-footer">
+                        Изучить станцию
+                        <svg viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card" onclick="openSection('section2')">
+                <div class="card-content">
+                    <div class="card-step">02</div>
+                    <h3>Сталинградская битва</h3>
+                    <p>Коренной перелом: примеры массового героизма и значение битвы на Волге для хода всей войны.</p>
+                    <div class="card-footer">
+                        Изучить станцию
+                        <svg viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card" onclick="openSection('section3')">
+                <div class="card-content">
+                    <div class="card-step">03</div>
+                    <h3>Курская дуга</h3>
+                    <p>Танковое сражение под Прохоровкой и завершение коренного перелома в Великой Отечественной войне.</p>
+                    <div class="card-footer">
+                        Изучить станцию
+                        <svg viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card" onclick="openSection('section4')">
+                <div class="card-content">
+                    <div class="card-step">04</div>
+                    <h3>Герои-Панфиловцы</h3>
+                    <p>28 героев у разъезда Дубосеково: стойкость духа как решающий фактор обороны Москвы.</p>
+                    <div class="card-footer">
+                        Изучить станцию
+                        <svg viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card" onclick="openSection('section5')">
+                <div class="card-content">
+                    <div class="card-step">05</div>
+                    <h3>Наши дни: Единство народов</h3>
+                    <p>Современная Россия: преемственность поколений и значение 2026 года для патриотического воспитания.</p>
+                    <div class="card-footer">
+                        Изучить станцию
+                        <svg viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- СЕКЦИИ КОНТЕНТА -->
+
+        <!-- Раздел 1 -->
+        <div id="section1" class="content-section">
+            <div class="content-inner">
+                <div class="content-header">
+                    <h2>Непокорённый Ленинград</h2>
+                    <div class="breadcrumbs">
+                        <span onclick="closeSection()" class="crumb-link">Маршрут</span>
+                        <span class="crumb-sep">→</span>
+                        <span class="crumb-current">Станция 1</span>
+                    </div>
+                    <div class="nav-buttons">
+                        <button class="back-btn" onclick="closeSection()">← К списку</button>
+                        <button class="next-btn" onclick="openSection('section2')">Станция 2 →</button>
+                    </div>
+                </div>
+                <div class="content-body">
+
+                    <div class="audio-block">
+    <div class="audio-icon">♪</div>
+    <div class="audio-info">
+        <strong>Метроном блокадного Ленинграда</strong>
+        <span>Стук метронома в эфире ленинградского радио стал символом жизни осаждённого города</span>
+    </div>
+    <audio controls preload="none">
+        <source src="audio/metronome.mp3" type="audio/mpeg">
+        Ваш браузер не поддерживает аудио.
+    </audio>
+</div>
+
+                    <p>Блокада Ленинграда стала одной из самых трагических и одновременно героических страниц истории. Она длилась с 8 сентября 1941 года по 27 января 1944 года — <strong>872 дня</strong>.</p>
+
+                    <div class="stat-highlight">
+                        <div class="stat-item">
+                            <h4>872</h4>
+                            <p>дня блокады</p>
+                        </div>
+                        <div class="stat-item">
+                            <h4>~470 000</h4>
+                            <p>захоронено на Пискарёвском кладбище</p>
+                        </div>
+                        <div class="stat-item">
+                            <h4>800 000</h4>
+                            <p>жителей осталось к концу блокады</p>
+                        </div>
+                    </div>
+
+                    <p>Город выстоял благодаря невероятной силе духа жителей и солдат. Оборона <strong>Невского пятачка</strong> — небольшого плацдарма на левом берегу Невы — стала символом стойкости. Бойцы сражались, не давая врагу замкнуть кольцо блокады.</p>
+
+                    <blockquote>
+                        «Вы, живые, знайте, что мы не хотели уйти с этой земли и не ушли. Мы стояли насмерть у тёмных вод Невы. Мы погибли, чтобы вы могли жить». — Роберт Рождественский, надпись на камне мемориала «Невский пятачок»
+                    </blockquote>
+
+                    <p>Вопрос для обсуждения со студентами: <em>Как вы думаете, что помогло ленинградцам выжить в нечеловеческих условиях блокады? Приведите примеры из литературы или кино.</em></p>
+
+                    <div class="quiz" data-quiz="1">
+                        <h4 class="quiz-title">Проверьте себя</h4>
+                        <p class="quiz-question">Сколько дней длилась блокада Ленинграда?</p>
+                        <div class="quiz-options">
+                            <button class="quiz-opt" data-correct="false">500 дней</button>
+                            <button class="quiz-opt" data-correct="true">872 дня</button>
+                            <button class="quiz-opt" data-correct="false">1200 дней</button>
+                            <button class="quiz-opt" data-correct="false">365 дней</button>
+                        </div>
+                        <div class="quiz-feedback"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Раздел 2 -->
+        <div id="section2" class="content-section">
+            <div class="content-inner">
+                <div class="content-header">
+                    <h2>Сталинградская битва</h2>
+                    <div class="breadcrumbs">
+                        <span onclick="closeSection()" class="crumb-link">Маршрут</span>
+                        <span class="crumb-sep">→</span>
+                        <span class="crumb-current">Станция 2</span>
+                    </div>
+                    <div class="nav-buttons">
+                        <button class="back-btn" onclick="closeSection()">← К списку</button>
+                        <button class="next-btn" onclick="openSection('section3')">Станция 3 →</button>
+                    </div>
+                </div>
+                <div class="content-body">
+
+                    <div class="audio-block">
+                        <div class="audio-icon">♪</div>
+                        <div class="audio-info">
+                            <strong>Голос Левитана</strong>
+                            <span>Сводка Совинформбюро о победе под Сталинградом</span>
+                        </div>
+                        <audio controls preload="none">
+                            <source src="audio/levitan.mp3" type="audio/mpeg">
+                            Ваш браузер не поддерживает аудио.
+                        </audio>
+                    </div>
+
+                    <p>Сталинградская битва (17 июля 1942 — 2 февраля 1943) стала началом коренного перелома в ходе Великой Отечественной войны. День разгрома советскими войсками немецко-фашистских войск в Сталинградской битве ежегодно отмечается как День воинской славы России.</p>
+
+                    <p>Бои шли за каждый дом, за каждый метр земли. Мамаев курган стал ключевой высотой, где сражались тысячи солдат. Приказ «Ни шагу назад!» стал отражением решимости защитить город на Волге любой ценой.</p>
+
+                    <p>Пример для изучения: <strong>Дом Павлова</strong> — жилой дом, который гарнизон под командованием сержанта Якова Павлова удерживал в течение 58 дней, превратив его в неприступную крепость.</p>
+
+                    <p>Вопрос для обсуждения: <em>Почему именно Сталинградская битва считается переломным моментом? Какое значение для морального духа армии и народа имела победа на Волге?</em></p>
+
+                    <div class="quiz" data-quiz="2">
+                        <h4 class="quiz-title">Проверьте себя</h4>
+                        <p class="quiz-question">Сколько дней гарнизон сержанта Павлова удерживал «Дом Павлова»?</p>
+                        <div class="quiz-options">
+                            <button class="quiz-opt" data-correct="false">20 дней</button>
+                            <button class="quiz-opt" data-correct="false">100 дней</button>
+                            <button class="quiz-opt" data-correct="true">58 дней</button>
+                            <button class="quiz-opt" data-correct="false">30 дней</button>
+                        </div>
+                        <div class="quiz-feedback"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Раздел 3 -->
+        <div id="section3" class="content-section">
+            <div class="content-inner">
+                <div class="content-header">
+                    <h2>Курская дуга</h2>
+                    <div class="breadcrumbs">
+                        <span onclick="closeSection()" class="crumb-link">Маршрут</span>
+                        <span class="crumb-sep">→</span>
+                        <span class="crumb-current">Станция 3</span>
+                    </div>
+                    <div class="nav-buttons">
+                        <button class="back-btn" onclick="closeSection()">← К списку</button>
+                        <button class="next-btn" onclick="openSection('section4')">Станция 4 →</button>
+                    </div>
+                </div>
+                <div class="content-body">
+                    <p>Битва на Курской дуге (5 июля — 23 августа 1943) завершила коренной перелом. 23 августа отмечается как День разгрома советскими войсками немецко-фашистских войск в Курской битве.</p>
+
+                    <p>Ключевое сражение — танковая битва под <strong>Прохоровкой</strong>, крупнейшее в истории. С обеих сторон в нём участвовало около 1200 танков и самоходных орудий.</p>
+
+                    <blockquote>
+                        «Именно здесь, на Курской дуге, был сломан хребет фашистской военной машине».
+                    </blockquote>
+
+                    <p>Вопрос для обсуждения: <em>Какие технологические и тактические преимущества позволили советским войскам одержать победу в танковом сражении?</em></p>
+
+                    <div class="quiz" data-quiz="3">
+                        <h4 class="quiz-title">Проверьте себя</h4>
+                        <p class="quiz-question">Под каким населённым пунктом произошло крупнейшее танковое сражение?</p>
+                        <div class="quiz-options">
+                            <button class="quiz-opt" data-correct="false">Курск</button>
+                            <button class="quiz-opt" data-correct="true">Прохоровка</button>
+                            <button class="quiz-opt" data-correct="false">Орёл</button>
+                            <button class="quiz-opt" data-correct="false">Белгород</button>
+                        </div>
+                        <div class="quiz-feedback"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Раздел 4 -->
+        <div id="section4" class="content-section">
+            <div class="content-inner">
+                <div class="content-header">
+                    <h2>Герои-Панфиловцы</h2>
+                    <div class="breadcrumbs">
+                        <span onclick="closeSection()" class="crumb-link">Маршрут</span>
+                        <span class="crumb-sep">→</span>
+                        <span class="crumb-current">Станция 4</span>
+                    </div>
+                    <div class="nav-buttons">
+                        <button class="back-btn" onclick="closeSection()">← К списку</button>
+                        <button class="next-btn" onclick="openSection('section5')">Станция 5 →</button>
+                    </div>
+                </div>
+                <div class="content-body">
+                    <p>Мемориал «Героям-панфиловцам» находится в Московской области. Он посвящён подвигу 28 бойцов 316-й стрелковой дивизии под командованием генерал-майора Ивана Панфилова, которые 16 ноября 1941 года у разъезда Дубосеково вступили в бой с превосходящими силами танков противника.</p>
+
+                    <p>Ценой своих жизней бойцы остановили продвижение врага на Москву. Фраза политрука Василия Клочкова, обращённая к бойцам, стала одной из самых известных в истории войны: <strong>«Велика Россия, а отступать некуда — позади Москва!»</strong></p>
+
+                    <p>Вопрос для обсуждения: <em>Как вы понимаете выражение «массовый героизм»? В чём его истоки?</em></p>
+
+                    <div class="quiz" data-quiz="4">
+                        <h4 class="quiz-title">Проверьте себя</h4>
+                        <p class="quiz-question">Кому принадлежит фраза «Велика Россия, а отступать некуда — позади Москва!»?</p>
+                        <div class="quiz-options">
+                            <button class="quiz-opt" data-correct="false">Ивану Панфилову</button>
+                            <button class="quiz-opt" data-correct="true">Василию Клочкову</button>
+                            <button class="quiz-opt" data-correct="false">Якову Павлову</button>
+                            <button class="quiz-opt" data-correct="false">Георгию Жукову</button>
+                        </div>
+                        <div class="quiz-feedback"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Раздел 5 -->
+        <div id="section5" class="content-section">
+            <div class="content-inner">
+                <div class="content-header">
+                    <h2>Наши дни: Единство народов</h2>
+                    <div class="breadcrumbs">
+                        <span onclick="closeSection()" class="crumb-link">Маршрут</span>
+                        <span class="crumb-sep">→</span>
+                        <span class="crumb-current">Станция 5</span>
+                    </div>
+                    <div class="nav-buttons">
+                        <button class="back-btn" onclick="closeSection()">← К списку</button>
+                        <button class="next-btn" onclick="showFinalScreen()">Завершить маршрут ★</button>
+                    </div>
+                </div>
+                <div class="content-body">
+                    <p>2026 год объявлен Президентом Российской Федерации <strong>Годом единства народов России</strong>. Это подчёркивает важность межнационального согласия как основы государственной стабильности.</p>
+
+                    <p>В новейшей истории России мы видим преемственность традиций: память о подвигах предков служит ориентиром для современных защитников Отечества. В 2026 году отмечается и <strong>День защитника Отечества</strong> — праздник, который остаётся символом народной любви к тем, кто стоит на страже Родины.</p>
+
+                    <p>Дни воинской славы России, установленные Федеральным законом, напоминают нам о ключевых вехах истории. Среди них:</p>
+                    <ul>
+                        <li>27 января — День полного освобождения Ленинграда;</li>
+                        <li>2 февраля — День разгрома фашистских войск в Сталинградской битве;</li>
+                        <li>9 мая — День Победы;</li>
+                        <li>23 августа — День разгрома фашистских войск в Курской битве;</li>
+                        <li>3 декабря — День Неизвестного Солдата;</li>
+                        <li>9 декабря — День Героев Отечества.</li>
+                    </ul>
+
+                    <p>Вопрос для обсуждения: <em>Почему сохранение исторической памяти и единства народа является критически важным для современной России? Что каждый из нас может сделать для этого?</em></p>
+
+                    <div class="quiz" data-quiz="5">
+                        <h4 class="quiz-title">Проверьте себя</h4>
+                        <p class="quiz-question">Какой год объявлен Годом единства народов России?</p>
+                        <div class="quiz-options">
+                            <button class="quiz-opt" data-correct="false">2024</button>
+                            <button class="quiz-opt" data-correct="false">2025</button>
+                            <button class="quiz-opt" data-correct="true">2026</button>
+                            <button class="quiz-opt" data-correct="false">2027</button>
+                        </div>
+                        <div class="quiz-feedback"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ФИНАЛЬНЫЙ ЭКРАН -->
+        <section id="finalScreen" class="final-screen">
+            <div class="final-inner">
+                <div class="final-icon">★</div>
+                <h2>Маршрут пройден</h2>
+                <p class="final-subtitle">Вы изучили пять ключевых вех героической истории России</p>
+
+                <div class="final-quote">
+                    «Народ, не знающий своего прошлого, не имеет будущего».<br>
+                    <span>— Михаил Ломоносов</span>
+                </div>
+
+                <div class="final-reflection">
+                    <h3>Рефлексия</h3>
+                    <p>Ответьте себе на главный вопрос маршрута:</p>
+                    <textarea id="reflectionInput" placeholder="Что для меня значит быть патриотом России сегодня? Как я могу сохранить память о подвиге предков в своей повседневной жизни?"></textarea>
+                    <button class="final-btn" onclick="saveReflection()">Сохранить размышление</button>
+                    <p class="final-note" id="reflectionNote"></p>
+                </div>
+
+                <button class="final-back" onclick="closeSection()">← Вернуться к станциям</button>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- ПОДВАЛ -->
+    <footer>
+        <div class="container">
+            <p>© 2026. Электронный образовательный ресурс преподавателя.<br>
+            Разработчики: преподаватель Суркова Татьяна Сергеевна, старший методист Любченко Елена Александровна, методист Толкачева Ирина Васильевна<br>
+            Номинация: <strong>«Цифровой медиаконтент как средство гражданско-патриотического воспитания»</strong></p>
+            <p style="margin-top: 15px; font-size: 0.8rem;">Материал подготовлен с использованием актуальных данных о Днях воинской славы России.</p>
+
+            <div class="share-block">
+                <p class="share-title">Поделиться маршрутом:</p>
+                <div class="share-buttons">
+                    <button class="share-btn" onclick="shareResult('vk')">ВКонтакте</button>
+                    <button class="share-btn" onclick="shareResult('max')">Макс</button>
+                    <button class="share-btn" onclick="copyLink()">Скопировать ссылку</button>
+                </div>
+                <p class="share-note" id="shareNote"></p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- СКРИПТ -->
+    <script>
+        // --- Прогресс прохождения маршрута ---
+        const visitedSections = new Set();
+
+        function updateProgress() {
+            const total = 5;
+            const count = visitedSections.size;
+            const percent = (count / total) * 100;
+
+            document.getElementById('progressText').textContent = `${count} / ${total}`;
+            document.getElementById('progressFill').style.width = percent + '%';
+
+            const badge = document.getElementById('progressBadge');
+            if (count === 0) {
+                badge.textContent = 'Маршрут только начат';
+                badge.classList.remove('complete');
+            } else if (count < total) {
+                badge.textContent = `В процессе: ${Math.round(percent)}%`;
+                badge.classList.remove('complete');
+            } else {
+                badge.textContent = '★ Маршрут пройден полностью!';
+                badge.classList.add('complete');
+            }
+
+            document.querySelectorAll('.card').forEach((card, i) => {
+                if (visitedSections.has('section' + (i + 1))) {
+                    card.classList.add('visited');
+                }
+            });
+
+         
+        }
+
+        function openSection(id) {
+            visitedSections.add(id);
+            updateProgress();
+
+            document.querySelector('.route-intro').style.display = 'none';
+            document.querySelector('.route-grid').style.display = 'none';
+
+            const sections = document.querySelectorAll('.content-section');
+            sections.forEach(sec => sec.classList.remove('active'));
+            document.getElementById('finalScreen').classList.remove('active');
+
+            const target = document.getElementById(id);
+            if (target) {
+                target.classList.add('active');
+                target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+        }
+
+        function closeSection() {
+            const sections = document.querySelectorAll('.content-section');
+            sections.forEach(sec => sec.classList.remove('active'));
+            document.getElementById('finalScreen').classList.remove('active');
+
+            document.querySelector('.route-intro').style.display = 'block';
+            document.querySelector('.route-grid').style.display = 'grid';
+
+            document.querySelector('.route-intro').scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+
+        // --- Финальный экран ---
+        function showFinalScreen() {
+            document.querySelector('.route-intro').style.display = 'none';
+            document.querySelector('.route-grid').style.display = 'none';
+            document.querySelectorAll('.content-section').forEach(s => s.classList.remove('active'));
+            document.getElementById('finalScreen').classList.add('active');
+            document.getElementById('finalScreen').scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+
+        function saveReflection() {
+            const val = document.getElementById('reflectionInput').value.trim();
+            const note = document.getElementById('reflectionNote');
+            if (val.length < 10) {
+                note.style.color = '#e74c3c';
+                note.textContent = 'Напишите чуть подробнее — хотя бы одно предложение.';
+                return;
+            }
+            localStorage.setItem('reflection_2026', val);
+            note.style.color = '#2ecc71';
+            note.textContent = '✓ Ваше размышление сохранено в браузере.';
+        }
+
+        // --- Квиз ---
+        document.querySelectorAll('.quiz').forEach(quiz => {
+            const opts = quiz.querySelectorAll('.quiz-opt');
+            const feedback = quiz.querySelector('.quiz-feedback');
+
+            opts.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const isCorrect = btn.dataset.correct === 'true';
+
+                    opts.forEach(b => {
+                        b.disabled = true;
+                        if (b.dataset.correct === 'true') b.classList.add('correct');
+                    });
+
+                    if (!isCorrect) btn.classList.add('wrong');
+
+                    feedback.classList.remove('ok', 'no');
+                    if (isCorrect) {
+                        feedback.classList.add('ok');
+                        feedback.textContent = '✓ Верно! Отличное знание материала.';
+                    } else {
+                        feedback.classList.add('no');
+                        feedback.textContent = '✗ Не совсем. Правильный ответ подсвечен зелёным.';
+                    }
+                });
+            });
+        });
+
+        // --- Шаринг ---
+        function shareResult(network) {
+            const url = encodeURIComponent(window.location.href);
+            const text = encodeURIComponent('Прошёл образовательный маршрут «Маршрут Памяти»! Присоединяйтесь.');
+            let link = '';
+
+            if (network === 'vk') link = `https://vk.com/share.php?url=${url}&title=${text}`;
+            if (network === 'max') link = `https://web.max.ru/-68432129316168`;
+
+            window.open(link, '_blank', 'width=600,height=500');
+        }
+
+        function copyLink() {
+            navigator.clipboard.writeText(window.location.href).then(() => {
+                const note = document.getElementById('shareNote');
+                note.textContent = '✓ Ссылка скопирована в буфер обмена';
+                setTimeout(() => note.textContent = '', 3000);
+            });
+        }
+    </script>
+</body>
+</html>
